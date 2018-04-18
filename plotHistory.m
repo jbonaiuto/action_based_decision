@@ -28,25 +28,25 @@ for i=1:length(history.record_trials)
     stim_eye=squeeze(history.dnf_stim_eye(i,1:end_time,:))';
     stim_eye(find(stim_eye<-10))=-10;
     plot3dField(stim_eye,history.record_trials(i),end_time,event1_time,event2_time,movement_time,event_times,[-10,10],'stimulus eye',0);
-    saveas(field,['trial_' num2str(i) '.field.stim_eye.ai'], 'ai');
+    saveas(field,['trial_' num2str(i) '.field.stim_eye.eps'], 'eps');
     field=figure(2+(i-1)*11+3);
     %subplot(2, 2, 2);
     stim_hand=squeeze(history.dnf_stim_hand(i,1:end_time,:))';
     stim_hand(find(stim_hand<-10))=-10;
     plot3dField(stim_hand,history.record_trials(i),end_time,event1_time,event2_time,movement_time,event_times,[-10,10],'stimulus hand',0);
-    saveas(field,['trial_' num2str(i) '.field.stim_hand.ai'], 'ai');
+    saveas(field,['trial_' num2str(i) '.field.stim_hand.eps'], 'eps');
     field=figure(2+(i-1)*11+4);
     %subplot(2, 2, 3);
     dnf_eye=squeeze(history.dnf_sac(i,1:end_time,:))';
     dnf_eye(find(dnf_eye<-10))=-10;
     plot3dField(dnf_eye,history.record_trials(i),end_time,event1_time,event2_time,movement_time,event_times,[-10,10],'saccade u',0);
-    saveas(field,['trial_' num2str(i) '.field.dnf_eye.ai'], 'ai');
+    saveas(field,['trial_' num2str(i) '.field.dnf_eye.eps'], 'eps');
     field=figure(2+(i-1)*11+5);
     %subplot(2, 2, 4);
     dnf_hand=squeeze(history.dnf_rch(i,1:end_time,:))';
     dnf_hand(find(dnf_hand<-10))=-10;
     plot3dField(dnf_hand,history.record_trials(i),end_time,event1_time,event2_time,movement_time,event_times,[-10,10],'reach u',0);
-    saveas(field,['trial_' num2str(i) '.field.dnf_rch.ai'], 'ai');
+    saveas(field,['trial_' num2str(i) '.field.dnf_rch.eps'], 'eps');
     %plot2svg(['trial_' num2str(i) '.field.svg'], field, 'png');
     %saveas(field,['trial_' num2str(i) '.field.eps'], 'eps');
     %print('-dpdf','-painters', ['trial_' num2str(i) '.field.pdf']);
@@ -70,19 +70,19 @@ for i=1:length(history.record_trials)
     field_gray=figure(2+(i-1)*11+7);
     %subplot(2, 2, 1);
     plot3dField(stim_eye,history.record_trials(i),end_time,event1_time,event2_time,movement_time,event_times,[-10,10],'stimulus eye',1);
-    saveas(field_gray,['trial_' num2str(i) '.field_gray.stim_eye.ai'], 'ai');
+    saveas(field_gray,['trial_' num2str(i) '.field_gray.stim_eye.eps'], 'eps');
     %subplot(2, 2, 2);
     field_gray=figure(2+(i-1)*11+8);
     plot3dField(stim_hand,history.record_trials(i),end_time,event1_time,event2_time,movement_time,event_times,[-10,10],'stimulus hand',1);
-    saveas(field_gray,['trial_' num2str(i) '.field_gray.stim_hand.ai'], 'ai');
+    saveas(field_gray,['trial_' num2str(i) '.field_gray.stim_hand.eps'], 'eps');
     %subplot(2, 2, 3);
     field_gray=figure(2+(i-1)*11+9);
     plot3dField(dnf_eye,history.record_trials(i),end_time,event1_time,event2_time,movement_time,event_times,[-10,10],'saccade u',1);
-    saveas(field_gray,['trial_' num2str(i) '.field_gray.dnf_eye.ai'], 'ai');
+    saveas(field_gray,['trial_' num2str(i) '.field_gray.dnf_eye.eps'], 'eps');
     %subplot(2, 2, 4);
     field_gray=figure(2+(i-1)*11+10);
     plot3dField(dnf_hand,history.record_trials(i),end_time,event1_time,event2_time,movement_time,event_times,[-10,10],'reach u',1);
-    saveas(field_gray,['trial_' num2str(i) '.field_gray.dnf_hand.ai'], 'ai');
+    saveas(field_gray,['trial_' num2str(i) '.field_gray.dnf_hand.eps'], 'eps');
     %plot2svg(['trial_' num2str(i) '.field_gray.svg'], field_gray, 'png');
     %saveas(field_gray,['trial_' num2str(i) '.field_gray.eps'], 'eps');
     %print('-depsc','-painters', ['trial_' num2str(i) '.field_gray.eps']);
@@ -120,7 +120,7 @@ for i=1:length(history.record_trials)
     hold off;
     set(gca,'ylim',[0,50],'xlim',[-45,45]);
     daspect([1 1 1]);
-    saveas(traj,['trial_' num2str(i) '.trajectory.ai'], 'ai');
+    saveas(traj,['trial_' num2str(i) '.trajectory.eps'], 'eps');
 end
 
 max_cue_w=max([max(history.cue_sac_w(:)) max(history.cue_rch_w(:))]);
@@ -193,7 +193,7 @@ ylim([0 1.1]);
 
 er_w=zeros(size(history.expected_rew_w,1),size(history.dnf_stim_eye,3));
 for i=1:size(history.expected_rew_w,1)
-    er_w(i,:)=convertTwoDReferenceFramePolar(squeeze(history.expected_rew_w(i,:,:)),size(history.dnf_stim_eye,3),size(history.expected_rew_w,2),[0 0],target_positions);
+    er_w(i,:)=convertTwoDReferenceFramePolar(squeeze(history.expected_rew_w(i,:,:)), size(history.dnf_stim_eye,3), size(history.expected_rew_w,2), [0 0], target_positions);
 end
 figure(2+length(history.record_trials)*11+3);
 subplot(2,1,1);
@@ -219,6 +219,7 @@ plot(history.dopamine);
 xlabel('trial');
 ylabel('dopamine');
 ylim([0 1.1]);
+
 end
 
 function plot2dField(field,trial_num,event1_time,event2_time,movement_time,event_times,range,y_axis,gray)

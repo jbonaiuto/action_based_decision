@@ -66,8 +66,8 @@ elseif t>=protocolParams.tCueEnd && t<protocolParams.tGo
         protocolParams.check_delete_stimulus = 1;
         protocolParams.tStimulusEnd = t;   %When we contact the target, the stimuli disappear
     end
-    stim_input_eye=.45*stim_input_eye;
-    stim_input_hand=.45*stim_input_hand;
+    stim_input_eye=.5*stim_input_eye;
+    stim_input_hand=.5*stim_input_hand;
 else
     if protocolParams.check_go==0
         disp('go');

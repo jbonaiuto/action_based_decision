@@ -33,7 +33,7 @@ sliderWidth = 0.1;
 gapWidth = 0.01;
 textWidth = controlFieldWidth - sliderWidth - gapWidth;
 
-controlParamNames = {'dnf_in_e.params.h_u','dnf_in_e.params.c_exc','dnf_in_e.params.c_inh','dnf_in_e.params.g_inh','dnf_in_e.params.q_u',...    
+controlParamNames = {'dnf_in_e.params.h_u','dnf_in_e.params.c_exc','dnf_in_e.params.c_inh','dnf_in_e.params.g_inh','dnf_in_e.params.q_u',...
     'dnf_in_e.params.beta_u','dnf_in_h.params.h_u','dnf_in_h.params.c_exc','dnf_in_h.params.c_inh','dnf_in_h.params.g_inh',...
     'dnf_in_h.params.q_u','dnf_in_h.params.beta_u','dnf_sac.params.h_u','dnf_sac.params.c_exc','dnf_sac.params.c_inh','dnf_sac.params.g_inh',...
     'dnf_sac.params.q_u','dnf_sac.params.beta_u','dnf_rch.params.h_u','dnf_rch.params.c_exc','dnf_rch.params.c_inh','dnf_rch.params.g_inh','dnf_rch.params.q_u',...
@@ -64,13 +64,23 @@ dnf_expRewParams.c_exc = 0;
 
 dnf_sacParams=initDNFParams();    %Saccades field
 dnf_sacParams.tau_u=5;
-dnf_sacParams.c_inh = 30;
+%dnf_sacParams.c_inh = 30;
+dnf_sacParams.c_inh = 60;
+%dnf_sacParams.c_exc = 18;
 dnf_sacParams.c_exc = 18;
+dnf_sacParams.sigma_inh = 180;
+dnf_sacParams.q_u = 0.3;
+dnf_sacParams.g_inh = 1.0;
 
 dnf_rchParams=initDNFParams();    %Reach field
 dnf_rchParams.tau_u=5;
-dnf_rchParams.c_inh = 30;
+%dnf_rchParams.c_inh = 30;
+dnf_rchParams.c_inh = 60;
+%dnf_rchParams.c_exc = 18;
 dnf_rchParams.c_exc = 18;
+dnf_rchParams.sigma_inh = 180;
+dnf_rchParams.q_u = 0.3;
+dnf_rchParams.g_inh = 1.0;
 
 NexpRewNeurons = 100;
 NcuedNeurons = 100;
@@ -251,7 +261,7 @@ if debug>0
     outPlot_u0_hand = plot(0:dnf_in_h.params.fieldSize-1,10*dnf_in_h.output_u,'color','r','Linewidth',1);
     inPlot0_hand = plot(0:dnf_in_h.params.fieldSize-1,stimulus_input_hand+dnf_in_h.params.h_u,'color','g','Linewidth',1);
     set(gca,'ylim',[-15,15],'xlim',[0,dnf_in_h.params.fieldSize-1],'Ytick',[-10,0,10]);
-    ylabel('Input Field Hand','Fontsize',12);    
+    ylabel('Input Field Hand','Fontsize',12);
     
     changeAxes(SacAxes,fig);
     cla;
@@ -342,14 +352,14 @@ if debug>0
     set(gca,'ylim',[0 1.1],'xlim',[0,dnf_er_e.params.fieldSize-1],'Ytick',[0,1]);
     ylabel('E(Reward) - Effector','Fontsize',12);
     hold off;
-
+    
     changeAxes(RewardAlloAxes,fig);
     outPlot_er1=imagesc(expected_reward');
     set(gca,'ylim',[1,NexpRewNeurons],'xlim',[1,NexpRewNeurons],'Ydir','normal','Xtick',[20 60 100],'clim',[0 1]);
     cb=colorbar();
     set(cb,'Ytick',[0,1]);
     ylabel('E(Reward) - Body');
-
+    
     changeAxes(RewardBodyAxes,fig);
     outPlot_er2=imagesc(expected_reward_body');
     set(gca,'ylim',[1,NexpRewNeurons],'xlim',[1,NexpRewNeurons],'Ydir','normal','Xtick',[20 60 100],'clim',[0 1]);
@@ -368,8 +378,8 @@ while true
         stim_input_eye=zeros(1,dnf_in_e.params.fieldSize);
         stim_input_hand=zeros(1,dnf_in_h.params.fieldSize);
         
-        history=initHistory(simParams.nTrials, freq, simParams.tMax, dnf_in_e, dnf_in_h, dnf_sac, dnf_rch,NcuedNeurons,NexpRewNeurons);                
-
+        history=initHistory(simParams.nTrials, freq, simParams.tMax, dnf_in_e, dnf_in_h, dnf_sac, dnf_rch,NcuedNeurons,NexpRewNeurons);
+        
         % loop over trials
         while trial<=simParams.nTrials
             while simParams.running<1
@@ -387,7 +397,7 @@ while true
             flag_evaluate_rch=1;
             cnt_evaluate_sac= 0;
             cnt_evaluate_rch= 0;
-
+            
             dnf_in_e = resetDNF(dnf_in_e, tStoreFields);
             dnf_in_h = resetDNF(dnf_in_h, tStoreFields);
             dnf_er_e = resetDNF(dnf_in_e, tStoreFields);
@@ -420,7 +430,7 @@ while true
             trial_cue=zeros(simParams.tMax,NcuedNeurons);
             trial_effort_sac=zeros(simParams.tMax,dnf_sac.params.fieldSize);
             trial_effort_rch=zeros(simParams.tMax,dnf_rch.params.fieldSize);
-
+            
             % loop over time steps
             for t = 1 : simParams.tMax
                 while simParams.running<1
@@ -440,7 +450,7 @@ while true
                         elseif isempty(ActivePopSac) == 0 & sum(ControlSacX_previous)>0 % If there is no active population while moving, continue the same action
                             SaccadicStateTotal = RunSimTraj(lqgParams_saccade,[ControlSacX_previous(simParams.revaluate_threshold)*ones(size(lqgParams_saccade.Q,3)-1,1) ControlSacY_previous(simParams.revaluate_threshold)*ones(size(lqgParams_saccade.Q,3)-1,1)]',simParams.Xeye,0);
                         end
-                            
+                        
                         [MotorOutRch CostRch ActivePopRch] = LQGdnf(dnf_rch,simParams.output_u_rch_thr,...
                             lqgParams_reach,simParams.Xhand,simParams.minHandDist, ...
                             protocolParams.target_positions,1);
@@ -450,7 +460,7 @@ while true
                             ControlRchY_previous = ControlRchY;
                         elseif isempty(ActivePopRch) == 0 & sum(ControlRchX_previous)>0 % If there is no active population while moving, continue the same action
                             ReachingStateTotal = RunSimTraj(lqgParams_reach,[ControlRchX_previous(simParams.revaluate_threshold)*ones(size(lqgParams_reach.Q,3)-1,1) ControlRchY_previous(simParams.revaluate_threshold)*ones(size(lqgParams_reach.Q,3)-1,1)]',simParams.Xhand,1);
-                        end  
+                        end
                     end
                     
                     if max(dnf_sac.output_u) > simParams.thr_perf_saccade & isempty(ActivePopSac) ==0  % Start the saccadic movements
@@ -468,7 +478,7 @@ while true
                             rx=protocolParams.target_positions(i,1);
                             ry=protocolParams.target_positions(i,2);
                             simParams.eye_dist_targets=[simParams.eye_dist_targets; sqrt((SaccadicMovement(1,t)-rx)^2  + (SaccadicMovement(2,t)-ry)^2)];
-                        end                
+                        end
                         simParams.minEyeDist=min(simParams.eye_dist_targets);
                         changeAxes(BehaviorAxes,fig);
                         hold on;
@@ -501,7 +511,7 @@ while true
                     CostSac = 0;
                     CostRch = 0;
                 end
-
+                
                 chosen_target_idx=0;
                 if simParams.minEyeDist < simParams.Threshold_contact
                     simParams.flag_contact = 1;
@@ -521,26 +531,26 @@ while true
                     end
                 end
                 
-		changeAxes(BehaviorAxes,fig)
-		hold on;
-
+                changeAxes(BehaviorAxes,fig)
+                hold on;
+                
                 if protocolParams.protocol == 0 % target first
                     [protocolParams stim_input_eye stim_input_hand cue_context]=runTargetFirstProtocol(t, simParams,...
-                       protocolParams, dnf_in_e, dnf_in_h);
+                        protocolParams, dnf_in_e, dnf_in_h);
                 elseif protocolParams.protocol == 1 % cue first
                     [protocolParams stim_input_eye stim_input_hand cue_context]=runCueFirstProtocol(t, simParams,...
-                    protocolParams, dnf_in_e, dnf_in_h);
+                        protocolParams, dnf_in_e, dnf_in_h);
                 elseif protocolParams.protocol == 2 % memory
                     [protocolParams stim_input_eye stim_input_hand cue_context]=runMemoryProtocol(t, simParams,...
-                    protocolParams, dnf_in_e, dnf_in_h);
+                        protocolParams, dnf_in_e, dnf_in_h);
                 end
-
+                
                 hold off;
                 
                 disp(['t=' num2str(t)]);
                 
                 stimulus_field_eye     = max(0,normrnd(0.15,0.05,1,dnf_in_e.params.fieldSize))+2*stim_input_eye;
-                stimulus_field_hand    = max(0,normrnd(0.15,0.05,1,dnf_in_h.params.fieldSize))+2*stim_input_hand;
+                stimulus_field_hand    = max(0,normrnd(0.15,0.35,1,dnf_in_h.params.fieldSize))+2*stim_input_hand;
                 effort_sac      = normrnd(0,0.05,1,dnf_sac.params.fieldSize) + 10*CostSac;
                 effort_rch      = normrnd(0,0.05,1,dnf_rch.params.fieldSize) + 10*CostRch;
                 
@@ -548,7 +558,7 @@ while true
                 expected_reward_hand=normrnd(0,0.05,1,dnf_in_h.params.fieldSize);
                 expected_reward_eye=normrnd(0,0.05,1,dnf_in_h.params.fieldSize);
                 if max(stim_input_eye) > 0 || max(stim_input_hand) > 0
-                    expected_reward_body=expected_reward_body+expected_reward; 
+                    expected_reward_body=expected_reward_body+expected_reward;
                 end
                 expected_reward_eye=expected_reward_eye+convertTwoDReferenceFramePolar(expected_reward_body, ...
                     dnf_in_e.params.fieldSize, NexpRewNeurons, [simParams.xe simParams.ye],...
@@ -561,9 +571,10 @@ while true
                 context_w=0.1;
                 in_w=8.0;
                 effort_w=-0.1;
-                er_w=0.2;
-                lesion_w=-0.1;
-
+                er_w=0.1;
+                %lesion_w=-0.01;
+                lesion_w=-0.0999;
+                
                 lesion_sac=zeros(1,dnf_in_e.params.fieldSize);
                 lesion_rch=zeros(1,dnf_in_h.params.fieldSize);
                 if protocolParams.lesion==1 % left eye
@@ -575,39 +586,40 @@ while true
                 elseif protocolParams.lesion==4 % right hand
                     lesion_rch(round(dnf_in_h.params.fieldSize/2):dnf_in_h.params.fieldSize)=lesion_w;
                 end
-
-		% input to the saccade motor plan formation DNF
+                
+                % input to the saccade motor plan formation DNF
                 stimulus_sac = inhib_w*sum(dnf_rch.output_u(:))*ones(1,dnf_rch.params.fieldSize)+...
                     context_w*cue_context*squeeze(Wcued(1,:,:))+in_w*dnf_in_e.output_u+...
                     effort_w*effort_sac+er_w*dnf_er_e.output_u+lesion_sac;
-
-		% input to the reach motor plan formation DNF
-                stimulus_rch = inhib_w*sum(dnf_sac.output_u(:))*ones(1,dnf_sac.params.fieldSize)+...
-                   context_w*cue_context*squeeze(Wcued(2,:,:))+in_w*dnf_in_h.output_u+...
-                   effort_w*effort_rch+er_w*dnf_er_h.output_u+lesion_rch;
                 
-		% run eye stimulus input field
+                % input to the reach motor plan formation DNF
+                stimulus_rch = inhib_w*sum(dnf_sac.output_u(:))*ones(1,dnf_sac.params.fieldSize)+...
+                    context_w*cue_context*squeeze(Wcued(2,:,:))+in_w*dnf_in_h.output_u+...
+                    effort_w*effort_rch+er_w*dnf_er_h.output_u+lesion_rch;
+                
+                % run eye stimulus input field
                 dnf_in_e=runDNF(dnf_in_e, stimulus_field_eye, tStoreFields, t);
-		% run hand stimulus input field
-                dnf_in_h=runDNF(dnf_in_h, stimulus_field_hand, tStoreFields, t);
-		% run eye expected reward field
+                % run hand stimulus input field
+                %dnf_in_h=runDNF(dnf_in_h, stimulus_field_hand, tStoreFields, t);
+                dnf_in_h=runDNF(dnf_in_h, stimulus_field_eye, tStoreFields, t);
+                % run eye expected reward field
                 dnf_er_e=runDNF(dnf_er_e, 10*expected_reward_eye, tStoreFields, t);
-		% run hand expected reward field
+                % run hand expected reward field
                 dnf_er_h=runDNF(dnf_er_h, 10*expected_reward_hand, tStoreFields, t);
-		% run saccade motor plan formation DNF
+                % run saccade motor plan formation DNF
                 dnf_sac=runDNF(dnf_sac, stimulus_sac, tStoreFields, t);
-		% run reach motor plan formation DNF
+                % run reach motor plan formation DNF
                 dnf_rch=runDNF(dnf_rch, stimulus_rch, tStoreFields, t);
                 
-		% compute reach eligibility (decaying copy of reach motor plan formation DNF output)
+                % compute reach eligibility (decaying copy of reach motor plan formation DNF output)
                 elig_reach=min(1,elig_reach+lambda1*dnf_rch.output_u-(1-lambda2)*elig_reach);
-		% compute saccade eligibility (decaying copy of reach motor plan formation DNF output)
+                % compute saccade eligibility (decaying copy of reach motor plan formation DNF output)
                 elig_saccade=min(1,elig_saccade+lambda1*dnf_sac.output_u-(1-lambda2)*elig_saccade);
                 
                 trial_cue(t,:)=cue_context;
                 trial_effort_sac(t,:)=effort_sac;
                 trial_effort_rch(t,:)=effort_rch;
-
+                
                 if debug>0
                     set(inPlot0_eye, 'Ydata', stimulus_field_eye+dnf_in_e.params.h_u);
                     set(inPlot0_hand, 'Ydata', stimulus_field_hand+dnf_in_h.params.h_u);
@@ -640,28 +652,28 @@ while true
             
             % spatial eligibility field (multivariate Gaussian of location moved to with either effector)
             elig_spatial=zeros(NexpRewNeurons,NexpRewNeurons);
-
+            
             % if an effector contacted a target on this trial
             if simParams.flag_contact>0
-
-		% compute spatial eligibility field
+                
+                % compute spatial eligibility field
                 for x=1:NexpRewNeurons
                     for y=1:NexpRewNeurons
                         % x coordinate for index x, eligspatial is 100x100 and codes for x=-45 to x=45
                         x_coord=(x-NexpRewNeurons/2.0+1.0)/(NexpRewNeurons)*(45.0--45.0);
                         % y coordinate for index y, eligspatial is 100x100 and codes for y=0 to x=50
                         y_coord=(y-1.0)*(50-0.0)/(NexpRewNeurons-1);
-			% the eligibility trace is a mutivariate Guassian of the x and y coordinate, centered on the coordinate of the chosen target
+                        % the eligibility trace is a mutivariate Guassian of the x and y coordinate, centered on the coordinate of the chosen target
                         elig_spatial(x,y)=gauss(x_coord,protocolParams.target_positions(chosen_target_idx,1),5)*gauss(y_coord,protocolParams.target_positions(chosen_target_idx,2),5);
                     end
                 end
-
-		% determine if reward was earned
+                
+                % determine if reward was earned
                 if (reward_type==1 && ((simParams.chosen_effector==1 && protocolParams.cue==0) || (simParams.chosen_effector==2 && protocolParams.cue==1))) || (reward_type==2 && simParams.chosen_target==1) || (reward_type==3 && simParams.chosen_target==2)
                     dopamine_reward=reward_da;
                 end
             end
-
+            
             % Update expected reward and normalize
             expected_reward=expected_reward+elig_spatial.*(spatial_alpha*dopamine_reward);
             expected_reward=expected_reward./max(expected_reward(:));
@@ -676,7 +688,7 @@ while true
             end
             
             history=recordHistory(history, trial, ReachingMovement', SaccadicMovement', dnf_in_e, dnf_in_h, dnf_sac, dnf_rch, trial_cue, trial_effort_sac, trial_effort_rch, dopamine_reward, Wcued, expected_reward);
-
+            
             changeAxes(BehaviorAxes,fig);
             hold off;
             plot(0,0,'.');
@@ -715,13 +727,13 @@ while true
             if protocolParams.cue>0
                 cue='g';
             end
-            plotHistory(history,500,protocolParams.target_positions,cue,[]);
+            %plotHistory(history,500,protocolParams.target_positions,cue,[]);
             plotted=1;
         end
         if recordSim>0 && exist('ff')
             disp('Writing movie file....');
             recordFile=get(recordFilefield,'String');
-            movie2avi(ff, recordFile, 'compression', 'None');
+            movie2avi(ff, recordFile, 'compression', 'None','quality', 50);
             disp('done!');
             clear ff;
         end
@@ -837,8 +849,10 @@ disp('Done')
             end
             protocolParams.init_expected_reward = [1.0];
         elseif num_targets==2
-            protocolParams.target_positions=[[-12 30]; [12 30]];
-            protocolParams.init_expected_reward = [0.5; 0.5];
+            protocolParams.target_positions=[[-25 30]; [25 30]];
+            %protocolParams.init_expected_reward = [0.5; 0.5];
+            %protocolParams.init_expected_reward = [0.9; 0.1];
+            protocolParams.init_expected_reward = [0.0; 1.0];
         elseif num_targets==3
             protocolParams.target_positions=[[-12 30]; [0 30]; [12 30]];
             protocolParams.init_expected_reward = [0.33; 0.33; 0.33];
