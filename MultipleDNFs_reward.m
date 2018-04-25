@@ -3,6 +3,11 @@ function MultipleDNFs_reward(debug, init_cue_w)
 close all
 clc
 
+
+addpath('dnf');
+addpath('lqg');
+addpath('protocol');
+
 param_fig = figure('Position',[50,10,1400,300],'Name','DNF Params',...
     'Color','w','NumberTitle','off','MenuBar','none');
 
@@ -743,6 +748,10 @@ while true
 end
 save('history','history');
 disp('Done')
+rmpath('dnf');
+rmpath('lqg');
+rmpath('protocol');
+
 % nStoredFields = simParams.nTrials * length(tStoreFields);
 %
 % % view evolution of field activities in each trial as mesh plot
