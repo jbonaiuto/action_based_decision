@@ -171,24 +171,24 @@ elig_spatial=zeros(NexpRewNeurons,NexpRewNeurons);
 protocolTxt=uicontrol(fig,'Style','Text','Units','Norm','Position',[gapWidth, 5*controlFieldHeight, controlFieldWidth/2, controlFieldHeight], 'String', 'Protocol', 'HorizontalAlignment', 'left', 'BackgroundColor', 'w');
 protocolDropdown=uicontrol(fig,'Style','Popupmenu', 'Units', 'Norm', 'Position', [gapWidth+.05, 5*controlFieldHeight, controlFieldWidth/2, controlFieldHeight], 'String', 'targets first|cue first|memory', 'Callback', @setProtocol);
 cueTxt=uicontrol(fig,'Style','Text','Units','Norm','Position',[controlFieldWidth/2+2*gapWidth+.05, 5*controlFieldHeight, controlFieldWidth/2, controlFieldHeight], 'String', 'Cue', 'HorizontalAlignment', 'left', 'BackgroundColor', 'w');
-cueDropdown=uicontrol(fig, 'Style', 'Popupmenu', 'Units', 'Norm', 'Position', [.075+controlFieldWidth/2+3*gapWidth, 5*controlFieldHeight, controlFieldWidth/2, controlFieldHeight], 'String', 'saccade|reach|free choice|saccade and reach', 'Callback', @setCue);
+cueDropdown=uicontrol(fig, 'Style', 'Popupmenu', 'Units', 'Norm', 'Position', [.075+controlFieldWidth/2+7*gapWidth, 5*controlFieldHeight, controlFieldWidth/2, controlFieldHeight], 'String', 'saccade|reach|free choice|saccade and reach', 'Callback', @setCue);
 
-startButton=uicontrol(fig, 'Style', 'Pushbutton', 'String', 'Start', 'Units', 'Norm', 'Position', [.075+controlFieldWidth+4*gapWidth, 5*controlFieldHeight+.0125, controlFieldWidth/4, .025], 'Callback', @startSim);
-pauseButton=uicontrol(fig, 'Style', 'Pushbutton', 'String', 'Pause', 'Units', 'Norm', 'Position', [.075+controlFieldWidth+5*gapWidth+controlFieldWidth/4, 5*controlFieldHeight+.0125, controlFieldWidth/4, .025], 'Callback', @pauseSim);
-stopButton=uicontrol(fig, 'Style', 'Pushbutton', 'String', 'Stop', 'Units', 'Norm', 'Position', [.075+controlFieldWidth+6*gapWidth+2*controlFieldWidth/4, 5*controlFieldHeight+.0125, controlFieldWidth/4, .025], 'Callback', @stopSim);
-saveCueButton=uicontrol(fig, 'Style', 'Pushbutton', 'String', 'Save Cue W', 'Units', 'Norm', 'Position', [.075+controlFieldWidth+7*gapWidth+3*controlFieldWidth/4, 5*controlFieldHeight+.0125, controlFieldWidth/3, .025], 'Callback', @saveCueW);
-loadCueButton=uicontrol(fig, 'Style', 'Pushbutton', 'String', 'Load Cue W', 'Units', 'Norm', 'Position', [.075+controlFieldWidth+8*gapWidth+3*controlFieldWidth/4+controlFieldWidth/3, 5*controlFieldHeight+.0125, controlFieldWidth/3, .025], 'Callback', @loadCueW);
-saveSpatialButton=uicontrol(fig, 'Style', 'Pushbutton', 'String', 'Save Spatial W', 'Units', 'Norm', 'Position', [.075+controlFieldWidth+7*gapWidth+3*controlFieldWidth/4, 4*controlFieldHeight-gapWidth, controlFieldWidth/3, .025], 'Callback', @saveSpatialW);
-loadSpatialButton=uicontrol(fig, 'Style', 'Pushbutton', 'String', 'Load Spatal W', 'Units', 'Norm', 'Position', [.075+controlFieldWidth+8*gapWidth+3*controlFieldWidth/4+controlFieldWidth/3, 4*controlFieldHeight-gapWidth, controlFieldWidth/3, .025], 'Callback', @loadSpatialW);
+startButton=uicontrol(fig, 'Style', 'Pushbutton', 'String', 'Start', 'Units', 'Norm', 'Position', [.075+controlFieldWidth+11*gapWidth, 5*controlFieldHeight+.0125, controlFieldWidth/4, .025], 'Callback', @startSim);
+pauseButton=uicontrol(fig, 'Style', 'Pushbutton', 'String', 'Pause', 'Units', 'Norm', 'Position', [.075+controlFieldWidth+12*gapWidth+controlFieldWidth/4, 5*controlFieldHeight+.0125, controlFieldWidth/4, .025], 'Callback', @pauseSim);
+stopButton=uicontrol(fig, 'Style', 'Pushbutton', 'String', 'Stop', 'Units', 'Norm', 'Position', [.075+controlFieldWidth+13*gapWidth+2*controlFieldWidth/4, 5*controlFieldHeight+.0125, controlFieldWidth/4, .025], 'Callback', @stopSim);
+saveCueButton=uicontrol(fig, 'Style', 'Pushbutton', 'String', 'Save Cue W', 'Units', 'Norm', 'Position', [.075+controlFieldWidth+14*gapWidth+3*controlFieldWidth/4, 5*controlFieldHeight+.0125, controlFieldWidth/3, .025], 'Callback', @saveCueW);
+loadCueButton=uicontrol(fig, 'Style', 'Pushbutton', 'String', 'Load Cue W', 'Units', 'Norm', 'Position', [.075+controlFieldWidth+15*gapWidth+3*controlFieldWidth/4+controlFieldWidth/3, 5*controlFieldHeight+.0125, controlFieldWidth/3, .025], 'Callback', @loadCueW);
+saveSpatialButton=uicontrol(fig, 'Style', 'Pushbutton', 'String', 'Save Spatial W', 'Units', 'Norm', 'Position', [.075+controlFieldWidth+14*gapWidth+3*controlFieldWidth/4, 4*controlFieldHeight-gapWidth, controlFieldWidth/3, .025], 'Callback', @saveSpatialW);
+loadSpatialButton=uicontrol(fig, 'Style', 'Pushbutton', 'String', 'Load Spatal W', 'Units', 'Norm', 'Position', [.075+controlFieldWidth+15*gapWidth+3*controlFieldWidth/4+controlFieldWidth/3, 4*controlFieldHeight-gapWidth, controlFieldWidth/3, .025], 'Callback', @loadSpatialW);
 
-recordCheckbox=uicontrol(fig, 'Style', 'Checkbox', 'String', 'Record', 'Value', 0, 'Units', 'Norm', 'Position', [.075+controlFieldWidth+4*gapWidth, 4*controlFieldHeight-gapWidth, controlFieldWidth/4, .025], 'Callback', @toggleRecord);
-recordFilefield=uicontrol(fig, 'Style', 'Edit', 'String', 'DNF_LQG_simulation.avi', 'Units', 'Norm', 'Position', [.075+controlFieldWidth+5*gapWidth+controlFieldWidth/4, 4*controlFieldHeight-gapWidth, controlFieldWidth/2, .025]);
+recordCheckbox=uicontrol(fig, 'Style', 'Checkbox', 'String', 'Record', 'Value', 0, 'Units', 'Norm', 'Position', [.075+controlFieldWidth+11*gapWidth, 4*controlFieldHeight-gapWidth, controlFieldWidth/4, .025], 'Callback', @toggleRecord);
+recordFilefield=uicontrol(fig, 'Style', 'Edit', 'String', 'DNF_LQG_simulation.avi', 'Units', 'Norm', 'Position', [.075+controlFieldWidth+12*gapWidth+controlFieldWidth/4, 4*controlFieldHeight-gapWidth, controlFieldWidth/2, .025]);
 
 targetsTxt=uicontrol(fig,'Style','Text','Units','Norm','Position',[gapWidth, 4*controlFieldHeight-gapWidth, controlFieldWidth/2, controlFieldHeight], 'String', 'Targets', 'HorizontalAlignment','left','BackgroundColor','w');
 targetsDropdown=uicontrol(fig, 'Style', 'Popupmenu', 'String', '1|2|3', 'Units', 'Norm', 'Position', [gapWidth+.05, 4*controlFieldHeight-gapWidth+.0125, controlFieldWidth/6, .025], 'Callback', @setNumTargets);
 
 trialsTxt=uicontrol(fig,'Style','Text','Units','Norm','Position',[controlFieldWidth/2+2*gapWidth+.05, 4*controlFieldHeight-gapWidth, controlFieldWidth/2, controlFieldHeight], 'String', 'Trials', 'HorizontalAlignment','left','BackgroundColor','w');
-trialsDropdown=uicontrol(fig, 'Style', 'Popupmenu', 'String', '1|10|25|50|100|250|500', 'Units', 'Norm', 'Position', [.075+controlFieldWidth/2+3*gapWidth, 4*controlFieldHeight-gapWidth+.0125, controlFieldWidth/6, .025], 'Callback', @setNumTrials);
+trialsDropdown=uicontrol(fig, 'Style', 'Popupmenu', 'String', '1|10|25|50|100|250|500', 'Units', 'Norm', 'Position', [.075+controlFieldWidth/2+7*gapWidth, 4*controlFieldHeight-gapWidth+.0125, controlFieldWidth/6, .025], 'Callback', @setNumTrials);
 
 rewardTxt=uicontrol(fig,'Style','Text','Units','Norm','Position',[gapWidth, 3*controlFieldHeight-2*gapWidth, controlFieldWidth/2, controlFieldHeight], 'String', 'Reward', 'HorizontalAlignment', 'left', 'BackgroundColor', 'w');
 rewardDropdown=uicontrol(fig, 'Style', 'Popupmenu', 'String', 'none|correct effector|left target|right target', 'Units', 'Norm', 'Position', [gapWidth+.05, 3*controlFieldHeight-2*gapWidth, controlFieldWidth/2, controlFieldHeight], 'Callback', @setReward);
@@ -197,10 +197,13 @@ lesionTxt=uicontrol(fig,'Style','Text','Units','Norm','Position',[gapWidth, 2*co
 lesionDropdown=uicontrol(fig, 'Style', 'Popupmenu', 'String', 'none|left saccade|right saccade|left reach|right reach', 'Units', 'Norm', 'Position', [gapWidth+.05, 2*controlFieldHeight-3*gapWidth, controlFieldWidth/2, controlFieldHeight], 'Callback', @setLesion);
 
 freqTxt=uicontrol(fig,'Style','Text','Units','Norm','Position',[controlFieldWidth/2+2*gapWidth+.05, 3*controlFieldHeight-2*gapWidth, controlFieldWidth/2, controlFieldHeight], 'String', 'Freq', 'HorizontalAlignment', 'left', 'BackgroundColor','w');
-freqDropdown=uicontrol(fig, 'Style', 'Popupmenu', 'String', '1|2|5|10|20|100', 'Units', 'Norm', 'Position', [.075+controlFieldWidth/2+3*gapWidth, 3*controlFieldHeight-2*gapWidth, controlFieldWidth/6, controlFieldHeight], 'Callback', @setFreq);
+freqDropdown=uicontrol(fig, 'Style', 'Popupmenu', 'String', '1|2|5|10|20|100', 'Units', 'Norm', 'Position', [.075+controlFieldWidth/2+7*gapWidth, 3*controlFieldHeight-2*gapWidth, controlFieldWidth/6, controlFieldHeight], 'Callback', @setFreq);
 
-trialLblTxt=uicontrol(fig,'Style','Text','Units','Norm','Position',[.075+controlFieldWidth+4*gapWidth, 3*controlFieldHeight-2*gapWidth, controlFieldWidth/2, controlFieldHeight], 'String', 'Trial:', 'HorizontalAlignment', 'left', 'BackgroundColor','w');
-trialTxt=uicontrol(fig,'Style','Text','Units','Norm','Position',[.1+controlFieldWidth+5*gapWidth, 3*controlFieldHeight-2*gapWidth, controlFieldWidth/2, controlFieldHeight], 'String', '1', 'HorizontalAlignment', 'left', 'BackgroundColor','w');
+pertTxt=uicontrol(fig,'Style','Text','Units','Norm','Position',[controlFieldWidth/2+2*gapWidth+.05, 2*controlFieldHeight-3*gapWidth, controlFieldWidth/2, controlFieldHeight], 'String', 'Perturbation', 'HorizontalAlignment', 'left', 'BackgroundColor','w');
+pertDropdown=uicontrol(fig, 'Style', 'Popupmenu', 'String', '0|-30|30', 'Units', 'Norm', 'Position', [.075+controlFieldWidth/2+7*gapWidth, 2*controlFieldHeight-3*gapWidth, controlFieldWidth/6, controlFieldHeight], 'Callback', @setPertubation);
+
+trialLblTxt=uicontrol(fig,'Style','Text','Units','Norm','Position',[.075+controlFieldWidth+11*gapWidth, 3*controlFieldHeight-2*gapWidth, controlFieldWidth/2, controlFieldHeight], 'String', 'Trial:', 'HorizontalAlignment', 'left', 'BackgroundColor','w');
+trialTxt=uicontrol(fig,'Style','Text','Units','Norm','Position',[.1+controlFieldWidth+12*gapWidth, 3*controlFieldHeight-2*gapWidth, controlFieldWidth/2, controlFieldHeight], 'String', '1', 'HorizontalAlignment', 'left', 'BackgroundColor','w');
 
 
 nControlParams = length(controlParamNames);
@@ -412,6 +415,7 @@ while true
             
             SaccadicMovement=zeros(2,simParams.tMax);
             ReachingMovement=zeros(2,simParams.tMax);
+            ReachingMovementVis=zeros(2,simParams.tMax);
             changeAxes(BehaviorAxes,fig);
             
             dopamine_reward=0;
@@ -475,9 +479,10 @@ while true
                         end
                         cnt_evaluate_sac = cnt_evaluate_sac + 1;
                         SaccadicMovement(:,t) = SaccadicStateTotal([1,3],cnt_evaluate_sac);
+                        
                         simParams.Xeye(1:end-2) = SaccadicStateTotal(:,cnt_evaluate_sac);
-                        simParams.xe   = SaccadicMovement(1,t);
-                        simParams.ye   = SaccadicMovement(2,t);
+                        %simParams.xe   = SaccadicMovement(1,t);
+                        %simParams.ye   = SaccadicMovement(2,t);
                         simParams.eye_dist_targets=[];
                         for i=1:size(protocolParams.target_positions,1)
                             rx=protocolParams.target_positions(i,1);
@@ -498,9 +503,17 @@ while true
                         end
                         cnt_evaluate_rch = cnt_evaluate_rch + 1;
                         ReachingMovement(:,t) = ReachingStateTotal([1,2],cnt_evaluate_rch);
+                        
+                        % Apply perturbation
+                        pert_rad=protocolParams.perturbation*pi/180.0;
+                        perturb_mat=[cos(pert_rad) -sin(pert_rad);sin(pert_rad) cos(pert_rad)];
+                        ReachingMovementVis(:,t)=ReachingMovement(:,t)'*perturb_mat;
+                        %simParams.xh_vis=X(1);
+                        %simParams.yh_vis=X(2);
+                        
                         simParams.Xhand(1:end-2) = ReachingStateTotal(:,cnt_evaluate_rch);
-                        simParams.xh    = ReachingMovement(1,t);
-                        simParams.yh    = ReachingMovement(2,t);
+                        %simParams.xh    = ReachingMovement(1,t);
+                        %simParams.yh    = ReachingMovement(2,t);
                         simParams.hand_dist_targets=[];
                         for i=1:size(protocolParams.target_positions,1)
                             rx=protocolParams.target_positions(i,1);
@@ -510,7 +523,7 @@ while true
                         simParams.minHandDist=min(simParams.hand_dist_targets);
                         changeAxes(BehaviorAxes,fig);
                         hold on;
-                        plot(ReachingMovement(1,t),ReachingMovement(2,t),'o','color',[0 1 0]);
+                        plot(ReachingMovementVis(1,t),ReachingMovementVis(2,t),'o','color',[0 1 0]);
                     end
                 else
                     CostSac = 0;
@@ -692,7 +705,7 @@ while true
                 end
             end
             
-            history=recordHistory(history, trial, ReachingMovement', SaccadicMovement', dnf_in_e, dnf_in_h, dnf_sac, dnf_rch, trial_cue, trial_effort_sac, trial_effort_rch, dopamine_reward, Wcued, expected_reward);
+            history=recordHistory(history, trial, ReachingMovement', ReachingMovementVis', SaccadicMovement', dnf_in_e, dnf_in_h, dnf_sac, dnf_rch, trial_cue, trial_effort_sac, trial_effort_rch, dopamine_reward, Wcued, expected_reward);
             
             changeAxes(BehaviorAxes,fig);
             hold off;
@@ -709,7 +722,7 @@ while true
                         symbol='o';
                     end
                     back_level=1-trial_idx*col_incr;
-                    plot(squeeze(history.reaching_movements(j,:,1)), squeeze(history.reaching_movements(j,:,2)), symbol, 'color', [back_level 1 back_level]);
+                    plot(squeeze(history.reaching_movements_vis(j,:,1)), squeeze(history.reaching_movements_vis(j,:,2)), symbol, 'color', [back_level 1 back_level]);
                     plot(squeeze(history.saccade_movements(j,:,1)), squeeze(history.saccade_movements(j,:,2)), symbol, 'color', [1 back_level back_level]);
                 end
             end
@@ -915,6 +928,17 @@ rmpath('protocol');
         end
     end
 
+    function setPertubation(hObject, eventdata)
+        perturbation=get(hObject,'Value');
+        if perturbation==1
+            protocolParams.perturbation=0.0;
+        elseif perturbation==2
+            protocolParams.perturbation=-30.0;
+        else
+            protocolParams.perturbation=30.0;
+        end
+    end
+
     function setReward(hObject, eventdata)
         reward_type=get(hObject, 'Value')-1;
         if reward_type==1
@@ -972,6 +996,7 @@ rmpath('protocol');
         dnf_rch    = resetDNF(dnf_rch,tStoreFields);
         clear SaccadicMovement;
         clear ReachingMovement;
+        clear ReachingMovementVis;
         trial=1;
         t=1;
         simParams.running=0;

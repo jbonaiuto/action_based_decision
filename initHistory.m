@@ -4,6 +4,7 @@ history.record_trials=[1:freq:trials];
 
 n_recorded_trials=length(history.record_trials);
 history.reaching_movements=zeros(n_recorded_trials,tMax,2);
+history.reaching_movements_vis=zeros(n_recorded_trials,tMax,2);
 history.saccade_movements=zeros(n_recorded_trials,tMax,2);
 
 history.dnf_stim_eye=zeros(n_recorded_trials,tMax,dnf_input_eye.params.fieldSize);

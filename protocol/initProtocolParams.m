@@ -7,6 +7,8 @@ protocolParams.cue=0;
 % Whether to randomly show reach and saccade
 protocolParams.random_cue=0;
 protocolParams.stimCoeff=7.0;
+% Trajectory perturbation
+protocolParams.perturbation=0.0;
 
 protocolParams.check_draw_stimulus   = 0;
 protocolParams.check_draw_context    = 0;

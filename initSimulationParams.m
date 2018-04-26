@@ -3,17 +3,13 @@ function simParams=initSimulationParams(protocolParams)
 simParams.nTrials = 1;
 simParams.tMax = 500;
 
-%%Targets position and hand fixation
 simParams.xh = 0;           % Hand initial x-poisition
 simParams.yh = 0;           % Hand initial y-poisition
 simParams.xe = 0;           % Eye initial x-position
 simParams.ye = 0;           % Eye initial y-position
 
-%simParams.rx1 = -12;        % Initial x-position of the target 1
-%simParams.ry1 =  40;        % Initial y-position of the target 1
-
-%simParams.rx2 = 12;         % Initial x-position of the target 2
-%simParams.ry2 = 40;         % Initial y-position of the target 2
+%simParams.xh_vis=0;         % Visual hand x-position
+%simParams.yh_vis=0;         % Visual hand y-position
 
 % State vector for reaching movement
 simParams.Xhand = zeros(10,1); 

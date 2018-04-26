@@ -1,8 +1,9 @@
-function history=recordHistory(history, trial, reaching_movement, saccade_movement, dnf_input_eye, dnf_input_hand, dnf_sac, dnf_rch, cue, effort_sac, effort_rch, dopamine, Wcued, expected_reward)
+function history=recordHistory(history, trial, reaching_movement, reaching_movement_vis, saccade_movement, dnf_input_eye, dnf_input_hand, dnf_sac, dnf_rch, cue, effort_sac, effort_rch, dopamine, Wcued, expected_reward)
 
 if length(find(history.record_trials==trial))
     idx=find(history.record_trials==trial);
     history.reaching_movements(idx,:,:)=reaching_movement;
+    history.reaching_movements_vis(idx,:,:)=reaching_movement_vis;
     history.saccade_movements(idx,:,:)=saccade_movement;
     history.dnf_stim_eye(idx,:,:)=dnf_input_eye.history_u;
     history.dnf_stim_hand(idx,:,:)=dnf_input_hand.history_u;

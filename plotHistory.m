@@ -5,7 +5,7 @@ event2_time=100;
 
 for i=1:length(history.record_trials)
 
-    movement_time=min([min(find(history.reaching_movements(i,:,2)>0)) min(find(history.reaching_movements(i,:,2)<0)) min(find(history.reaching_movements(i,:,1)>0)) min(find(history.reaching_movements(i,:,2)<0)) min(find(history.saccade_movements(i,:,2)>0)) min(find(history.saccade_movements(i,:,2)<0)) min(find(history.saccade_movements(i,:,1)>0)) min(find(history.saccade_movements(i,:,2)<0))]);
+    movement_time=min([min(find(history.reaching_movements_vis(i,:,2)>0)) min(find(history.reaching_movements_vis(i,:,2)<0)) min(find(history.reaching_movements_vis(i,:,1)>0)) min(find(history.reaching_movements_vis(i,:,2)<0)) min(find(history.saccade_movements(i,:,2)>0)) min(find(history.saccade_movements(i,:,2)<0)) min(find(history.saccade_movements(i,:,1)>0)) min(find(history.saccade_movements(i,:,2)<0))]);
 
     figure(2+(i-1)*11+1);    
     subplot(7, 1, 1);
@@ -94,7 +94,7 @@ for i=1:length(history.record_trials)
     if history.dopamine(i)>0
         symbol='o';
     end
-    plot(squeeze(history.reaching_movements(i,:,1)), squeeze(history.reaching_movements(i,:,2)), symbol, 'color', 'g');
+    plot(squeeze(history.reaching_movements_vis(i,:,1)), squeeze(history.reaching_movements_vis(i,:,2)), symbol, 'color', 'g');
     plot(squeeze(history.saccade_movements(i,:,1)), squeeze(history.saccade_movements(i,:,2)), symbol, 'color', 'r');
     for j=1:size(target_positions,1)
         rx=target_positions(j,1);
@@ -108,9 +108,9 @@ for i=1:length(history.record_trials)
     for j=1:length(event_times)
         rx=0;
         ry=0;
-        if history.reaching_movements(i,event_times(j),1)~=0 || history.reaching_movements(i,event_times(j),2)~=0
-            rx=history.reaching_movements(i,event_times(j),1);
-            ry=history.reaching_movements(i,event_times(j),2);
+        if history.reaching_movements_vis(i,event_times(j),1)~=0 || history.reaching_movements_vis(i,event_times(j),2)~=0
+            rx=history.reaching_movements_vis(i,event_times(j),1);
+            ry=history.reaching_movements_vis(i,event_times(j),2);
         elseif history.saccade_movements(i,event_times(j),1)~=0 || history.saccade_movements(i,event_times(j),2)~=0
             rx=history.saccade_movements(i,event_times(j),1);
             ry=history.saccade_movements(i,event_times(j),2);
