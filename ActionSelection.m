@@ -1,12 +1,14 @@
 
-function [EffectorStateTotal ControlX ControlY] = ActionSelection(MotorOut,ActivePop,dnf,lqgParams,Xstate,effector)
+function [EffectorStateTotal ControlX ControlY] = ActionSelection(MotorOut,...
+    ActivePop, dnf, W, lqgParams, Xstate, effector)
 
-Weights    = dnf.output_u(ActivePop)/sum(dnf.output_u(ActivePop));
+dnf_out=dnf.output_u*W;
+Weights    = dnf_out(ActivePop)/sum(dnf_out(ActivePop));
 ControlX = 0;
 ControlY = 0;
-for myControls = 1:size(ActivePop,2)
-    ControlX  = ControlX + Weights(myControls)*MotorOut(ActivePop(myControls)).x;
-    ControlY  = ControlY + Weights(myControls)*MotorOut(ActivePop(myControls)).y;
+for c_idx = 1:length(ActivePop)
+    ControlX  = ControlX + Weights(c_idx)*MotorOut(ActivePop(c_idx)).x;
+    ControlY  = ControlY + Weights(c_idx)*MotorOut(ActivePop(c_idx)).y;
 end
 EffectorStateTotal    = RunSimTraj(lqgParams,[ControlX ControlY]',Xstate,effector);
 

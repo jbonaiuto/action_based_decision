@@ -11,7 +11,7 @@ addpath('protocol');
 param_fig = figure('Position',[50,10,1400,300],'Name','DNF Params',...
     'Color','w','NumberTitle','off','MenuBar','none');
 
-fig = figure('Position',[50,50,1200,700],'Name','Neural Field',...
+fig = figure('Position',[50,50,1300,700],'Name','Neural Field',...
     'Color','w','NumberTitle','off','MenuBar','none');
 
 % create axes for field plots
@@ -25,8 +25,9 @@ RewardAlloAxes= axes('Position',[0.05 0.43 0.09 0.1]);
 RewardBodyAxes = axes('Position',[0.16 0.43 0.09 0.1]);
 RewardEgoAxes = axes('Position',[0.27 0.43 0.19 0.1]);
 kernelAxes    = axes('Position',[0.05 0.28 0.40 0.1]);
-CueAxes    = axes('Position',[0.50 0.88 0.20 0.1]);
-CueWAxes      = axes('Position',[0.75 0.88 0.20 0.1]);
+ReachControlWAxes = axes('Position',[0.5 0.88 0.09 0.1]);
+CueAxes    = axes('Position',[0.64 0.88 0.10 0.1]);
+CueWAxes      = axes('Position',[0.79 0.88 0.10 0.1]);
 BehaviorAxes  = axes('Position',[0.50 0.28 0.45 0.5]);
 
 
@@ -107,6 +108,9 @@ for i=1:NcuedNeurons
     end
 end
 
+WreachController = eye(dnf_rchParams.fieldSize);
+WsaccadeController = eye(dnf_sacParams.fieldSize);
+
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Stochastic optimal control framework
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -130,6 +134,7 @@ spatial_alpha=0.005;
 lambda1=.01;
 lambda2=0.996;
 reward_da=1.0;
+reach_cont_alpha=0.001;
 
 % set times at which field activities are stored (different variants)
 % tStoreFields = [100, 200]; % select specific time steps
@@ -373,6 +378,11 @@ if debug>0
     set(gca,'ylim',[1,NexpRewNeurons],'xlim',[1,NexpRewNeurons],'Ydir','normal','Xtick',[20 60 100],'clim',[0 1]);
     cb=colorbar();
     set(cb,'Ytick',[-.1,1.1]);
+    
+    changeAxes(ReachControlWAxes,fig);
+    outPlot_rchw=imagesc(WreachController);
+    set(gca,'ylim',[0,dnf_rch.params.fieldSize-1],'xlim',[0,dnf_rch.params.fieldSize-1],'clim',[0 1]);
+    cb=colorbar();
 end
 
 cnt_movie = 0;
@@ -421,6 +431,7 @@ while true
             dopamine_reward=0;
             elig_reach=zeros(size(dnf_rch.output_u));
             elig_saccade=zeros(size(dnf_sac.output_u));
+            % spatial eligibility field (multivariate Gaussian of location moved to with either effector)            
             elig_spatial=zeros(NexpRewNeurons,NexpRewNeurons);
             
             if protocolParams.random_cue>0
@@ -445,26 +456,31 @@ while true
                 while simParams.running<1
                     pause(.001);
                 end
+                if t>1
+                    ReachingMovementVis(:,t)=ReachingMovementVis(:,t-1);
+                    ReachingMovement(:,t)=ReachingMovement(:,t-1);
+                    SaccadicMovement(:,t)=SaccadicMovement(:,t-1);
+                end
                 if simParams.flag_contact < 1
                     if rem(t,simParams.revaluate_threshold) == 0  % Re-evaluate the reaching/saccade policies
                         cnt_evaluate_sac = 0;
                         cnt_evaluate_rch = 0;
-                        [MotorOutSac CostSac ActivePopSac] = LQGdnf(dnf_sac,simParams.output_u_sac_thr,...
+                        [MotorOutSac CostSac ActivePopSac] = LQGdnf(dnf_sac,WsaccadeController,simParams.output_u_sac_thr,...
                             lqgParams_saccade,simParams.Xeye,simParams.minEyeDist, ...
                             protocolParams.target_positions,0);
                         if isempty(ActivePopSac) == 0
-                            [SaccadicStateTotal ControlSacX ControlSacY] = ActionSelection(MotorOutSac,ActivePopSac,dnf_sac,lqgParams_saccade,simParams.Xeye,0);
+                            [SaccadicStateTotal ControlSacX ControlSacY] = ActionSelection(MotorOutSac,ActivePopSac,dnf_sac,WsaccadeController,lqgParams_saccade,simParams.Xeye,0);
                             ControlSacX_previous = ControlSacX;
                             ControlSacY_previous = ControlSacY;
                         elseif isempty(ActivePopSac) == 0 & sum(ControlSacX_previous)>0 % If there is no active population while moving, continue the same action
                             SaccadicStateTotal = RunSimTraj(lqgParams_saccade,[ControlSacX_previous(simParams.revaluate_threshold)*ones(size(lqgParams_saccade.Q,3)-1,1) ControlSacY_previous(simParams.revaluate_threshold)*ones(size(lqgParams_saccade.Q,3)-1,1)]',simParams.Xeye,0);
                         end
                         
-                        [MotorOutRch CostRch ActivePopRch] = LQGdnf(dnf_rch,simParams.output_u_rch_thr,...
+                        [MotorOutRch CostRch ActivePopRch] = LQGdnf(dnf_rch,WreachController,simParams.output_u_rch_thr,...
                             lqgParams_reach,simParams.Xhand,simParams.minHandDist, ...
                             protocolParams.target_positions,1);
                         if isempty(ActivePopRch) == 0
-                            [ReachingStateTotal ControlRchX ControlRchY]  = ActionSelection(MotorOutRch,ActivePopRch,dnf_rch,lqgParams_reach,simParams.Xhand,1);
+                            [ReachingStateTotal ControlRchX ControlRchY]  = ActionSelection(MotorOutRch,ActivePopRch,dnf_rch,WreachController,lqgParams_reach,simParams.Xhand,1);
                             ControlRchX_previous = ControlRchX;
                             ControlRchY_previous = ControlRchY;
                         elseif isempty(ActivePopRch) == 0 & sum(ControlRchX_previous)>0 % If there is no active population while moving, continue the same action
@@ -508,8 +524,6 @@ while true
                         pert_rad=protocolParams.perturbation*pi/180.0;
                         perturb_mat=[cos(pert_rad) -sin(pert_rad);sin(pert_rad) cos(pert_rad)];
                         ReachingMovementVis(:,t)=ReachingMovement(:,t)'*perturb_mat;
-                        %simParams.xh_vis=X(1);
-                        %simParams.yh_vis=X(2);
                         
                         simParams.Xhand(1:end-2) = ReachingStateTotal(:,cnt_evaluate_rch);
                         %simParams.xh    = ReachingMovement(1,t);
@@ -518,7 +532,8 @@ while true
                         for i=1:size(protocolParams.target_positions,1)
                             rx=protocolParams.target_positions(i,1);
                             ry=protocolParams.target_positions(i,2);
-                            simParams.hand_dist_targets=[simParams.hand_dist_targets; sqrt((ReachingMovement(1,t)-rx)^2  + (ReachingMovement(2,t)-ry)^2)];
+                            %simParams.hand_dist_targets=[simParams.hand_dist_targets; sqrt((ReachingMovement(1,t)-rx)^2  + (ReachingMovement(2,t)-ry)^2)];
+                            simParams.hand_dist_targets=[simParams.hand_dist_targets; min([sqrt((ReachingMovement(1,t)-rx)^2  + (ReachingMovement(2,t)-ry)^2) sqrt((ReachingMovementVis(1,t)-rx)^2  + (ReachingMovementVis(2,t)-ry)^2)])];
                         end
                         simParams.minHandDist=min(simParams.hand_dist_targets);
                         changeAxes(BehaviorAxes,fig);
@@ -632,8 +647,8 @@ while true
                 % compute reach eligibility (decaying copy of reach motor plan formation DNF output)
                 elig_reach=min(1,elig_reach+lambda1*dnf_rch.output_u-(1-lambda2)*elig_reach);
                 % compute saccade eligibility (decaying copy of reach motor plan formation DNF output)
-                elig_saccade=min(1,elig_saccade+lambda1*dnf_sac.output_u-(1-lambda2)*elig_saccade);
-                
+                elig_saccade=min(1,elig_saccade+lambda1*dnf_sac.output_u-(1-lambda2)*elig_saccade);                                
+
                 trial_cue(t,:)=cue_context;
                 trial_effort_sac(t,:)=effort_sac;
                 trial_effort_rch(t,:)=effort_rch;
@@ -660,6 +675,7 @@ while true
                     set(outPlot_u9,'Ydata',dnf_er_h.output_u);
                     set(outPlot_er1,'Cdata',expected_reward');
                     set(outPlot_er2,'Cdata',expected_reward_body');
+                    set(outPlot_rchw,'Cdata',WreachController);
                     drawnow;
                 end
                 
@@ -667,9 +683,6 @@ while true
                     ff(t) = getframe(fig);
                 end
             end
-            
-            % spatial eligibility field (multivariate Gaussian of location moved to with either effector)
-            elig_spatial=zeros(NexpRewNeurons,NexpRewNeurons);
             
             % if an effector contacted a target on this trial
             if simParams.flag_contact>0
@@ -703,8 +716,39 @@ while true
                 for j=1:dnf_rch.params.fieldSize
                     Wcued(:,i,j)=Wcued(:,i,j)/sum(Wcued(:,i,j));
                 end
-            end
+            end                                    
             
+            % Compute angular reach error
+            x1=ReachingMovementVis(1,t);
+            y1=ReachingMovementVis(2,t);
+            x2=ReachingMovement(1,t);
+            y2=ReachingMovement(2,t);
+            ang_err=atan2d(x1*y2-y1*x2, x1*x2+y1*y2);
+
+            % Update weights from reach DNF to reach controller
+            if sum(ReachingMovement(:,t))~=0
+                for i=1:dnf_rch.params.fieldSize
+                    dnf_pref_angle=i-90;
+                    for j=1:dnf_rch.params.fieldSize;
+                        cont_pref_angle=j-90;
+                        pref_diff=dnf_pref_angle-cont_pref_angle;
+                        elig_controller=abs(ang_err)*(2*exp((-(pref_diff-ang_err).^2)/(2*5^2))-1)*elig_reach(i);
+                        %WreachController(i,j)=WreachController(i,j)+reach_cont_alpha*elig_reach(i)*elig_controller;
+                        WreachController(j,i)=max([0 WreachController(j,i)+reach_cont_alpha*elig_controller]);
+                    end                    
+%                     if sum(WreachController(i,:),2)~=0
+
+%                     end
+                end
+                 for i=1:dnf_rch.params.fieldSize
+                     WreachController(:,i)=WreachController(:,i)./sum(WreachController(:,i),1);
+                 end
+
+%                 for j=1:dnf_rch.params.fieldSize;
+%                     WreachController(:,j)=WreachController(:,j)./sum(WreachController(:,j));
+%                 end
+            end
+                
             history=recordHistory(history, trial, ReachingMovement', ReachingMovementVis', SaccadicMovement', dnf_in_e, dnf_in_h, dnf_sac, dnf_rch, trial_cue, trial_effort_sac, trial_effort_rch, dopamine_reward, Wcued, expected_reward);
             
             changeAxes(BehaviorAxes,fig);
@@ -761,9 +805,6 @@ while true
 end
 save('history','history');
 disp('Done')
-rmpath('dnf');
-rmpath('lqg');
-rmpath('protocol');
 
 % nStoredFields = simParams.nTrials * length(tStoreFields);
 %

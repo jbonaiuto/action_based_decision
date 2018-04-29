@@ -47,8 +47,8 @@ simParams.chosen_target    = 0; % 0=none, 1=left, 2=right
 
 simParams.thr_perf_saccade    = 0.9;
 simParams.thr_perf_reach      = 0.9;
-simParams.output_u_sac_thr    = 0.2;
-simParams.output_u_rch_thr    = 0.2;
+simParams.output_u_sac_thr    = 0.1;
+simParams.output_u_rch_thr    = 0.05;
 
 simParams.revaluate_threshold = 50;
 simParams.stim_input_reward_threshold = 0.3;

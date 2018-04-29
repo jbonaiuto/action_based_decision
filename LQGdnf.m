@@ -1,10 +1,12 @@
 %function [MotorOut CostField u_above_thr_planning_id]  = LQGdnf(dnf,output_u_threshold,lqgParams,Xstate,distance,Target1,Target2,effector)
-function [MotorOut CostField u_above_thr_planning_id]  = LQGdnf(dnf,output_u_threshold,lqgParams,Xstate,distance,TargetsLoc,effector)
+function [MotorOut CostField u_above_thr_planning_id] = LQGdnf(dnf, W,...
+    output_u_threshold, lqgParams, Xstate, distance, TargetsLoc, effector)
+    dnf_out=dnf.output_u*W;
     CostField   = zeros(1,dnf.params.fieldSize);  
     MotorOut(dnf.params.fieldSize).x  = [];
     MotorOut(dnf.params.fieldSize).y  = [];
     
-    u_above_thr_planning_id = find(dnf.output_u>output_u_threshold);
+    u_above_thr_planning_id = find(dnf_out>output_u_threshold);
     if isempty(u_above_thr_planning_id) == 0 %Planning
         for jj = 1:length(u_above_thr_planning_id)
             [x y] = pol2cart(u_above_thr_planning_id(jj)*pi/180, distance);
